@@ -1,0 +1,130 @@
+#include <iostream>
+#include <cstdlib> // For rand() and srand() functions
+#include <ctime>   // For time() function
+
+using namespace std;
+
+// Function to print the choices
+
+void printChoices(char playerChoice, char computerChoice) {
+    cout << "You chose: " << playerChoice << endl;
+    cout << "Computer chose: " << computerChoice << endl;
+}
+
+// Function to determine the winner of a single round
+// Returns 1 if player wins, -1 if computer wins, 0 for a tie
+int determineRoundWinner(char playerChoice, char computerChoice) {
+    if (playerChoice == computerChoice) {
+        return 0; // Tie
+    }
+    else if ((playerChoice == 'r' && computerChoice == 's') ||
+        (playerChoice == 'p' && computerChoice == 'r') ||
+        (playerChoice == 's' && computerChoice == 'p')) {
+        return 1; // Player wins
+    }
+    else {
+        return -1; // Computer wins
+    }
+}
+
+// Function to display the results after each round
+void displayCurrentResults(int playerScore, int computerScore) {
+    cout << "\nCurrent results:" << endl;
+    cout << "Player score: " << playerScore << endl;
+    cout << "Computer score: " << computerScore << endl;
+}
+
+// Function to display the final results
+void displayFinalResults(int playerScore, int computerScore) {
+    cout << "\nGame over! Final results:" << endl;
+    cout << "Player score: " << playerScore << endl;
+    cout << "Computer score: " << computerScore << endl;
+
+    if (playerScore > computerScore) {
+        cout << "Congratulations! You win the game!" << endl;
+    }
+    else if (computerScore > playerScore) {
+        cout << "Computer wins the game. Better luck next time!" << endl;
+    }
+    else {
+        cout << "It's a tie game!" << endl;
+    }
+}
+
+// Function to get the player's choice with validation
+char getPlayerChoice() {
+    char playerChoice;
+    cout << "Enter your choice (r for Rock, p for Paper, s for Scissors): ";
+    while (true) {
+        cin >> playerChoice;
+        if (playerChoice == 'r' || playerChoice == 'p' || playerChoice == 's') {
+            break;
+        }
+        else {
+            cout << "Invalid choice. Please enter 'r', 'p', or 's': ";
+        }
+    }
+    return playerChoice;
+}
+
+// Function to get the computer's choice randomly
+char getComputerChoice() {
+    char choices[] = { 'r', 'p', 's' };
+    return choices[rand() % 3];
+}
+
+// Function to play a single round
+void playRound(int& playerScore, int& computerScore, int round) {
+    cout << "\nRound " << round << endl;
+
+    // Get player and computer choices
+    char playerChoice = getPlayerChoice();
+    char computerChoice = getComputerChoice();
+
+    // Print choices
+    printChoices(playerChoice, computerChoice);
+
+    // Determine the winner of the round
+    int roundResult = determineRoundWinner(playerChoice, computerChoice);
+
+    if (roundResult == 1) {
+        cout << "You win this round!" << endl;
+        playerScore++;
+    }
+    else if (roundResult == -1) {
+        cout << "Computer wins this round!" << endl;
+        computerScore++;
+    }
+    else {
+        cout << "It's a tie!" << endl;
+    }
+
+    // Display current results after each round
+    displayCurrentResults(playerScore, computerScore);
+}
+
+int main() {
+    srand(time(NULL)); // Seed the random number generator with current time
+
+    string playerName;
+    cout << "Welcome to Rock-Paper-Scissors!" << endl;
+    cout << "Please enter your name: ";
+    cin >> playerName;
+
+    int numRounds;
+    cout << "Hi " << playerName << "! How many rounds do you want to play? ";
+    cin >> numRounds;
+
+    int playerScore = 0;
+    int computerScore = 0;
+
+    // Play the specified number of rounds
+    for (int round = 1; round <= numRounds; ++round) {
+        playRound(playerScore, computerScore, round);
+    }
+
+    // Display overall results
+    displayFinalResults(playerScore, computerScore);
+
+    return 0;
+}
